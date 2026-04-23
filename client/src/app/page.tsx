@@ -2,12 +2,6 @@ import { products } from '@/lib/products';
 
 const categoryFilters = [
   'All Categories',
-  'Price',
-  'Review',
-  'Color',
-  'Material',
-  'Offer',
-  'All Filters'
 ];
 
 export default function HomePage() {
@@ -68,12 +62,7 @@ export default function HomePage() {
               ))}
             </div>
 
-            <button
-              className="w-fit rounded-full border border-[#0E4A4E] bg-white px-4 py-2 text-sm font-medium text-[#103A42]"
-              type="button"
-            >
-              Sort by
-            </button>
+            
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
