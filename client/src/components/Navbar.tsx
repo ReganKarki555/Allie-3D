@@ -3,7 +3,7 @@ import Link from 'next/link';
 export function Navbar() {
   return (
     <header className="px-4 pt-4 sm:px-6 sm:pt-6">
-      <div className="mx-auto flex max-w-7xl items-center gap-3 rounded-2xl bg-[#0E4A4E] px-4 py-3 text-white shadow-lg sm:gap-4 sm:px-5">
+      <div className="flex w-full items-center gap-3 rounded-2xl bg-[#0E4A4E] px-4 py-3 text-white shadow-lg sm:gap-4 sm:px-5">
         <button
           aria-label="Open menu"
           className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-lg"
@@ -55,7 +55,7 @@ export function Navbar() {
         </div>
       </div>
 
-      <div className="mx-auto mt-3 max-w-7xl md:hidden">
+      <div className="mt-3 w-full md:hidden">
         <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-500 shadow-sm">
           <input
             aria-label="Search products"
