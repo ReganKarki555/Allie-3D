@@ -20,7 +20,7 @@ export function Navbar() {
           <input
             aria-label="Search products"
             className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
-            placeholder="Search for Grocery, Stores, Vegetable or Meat"
+            placeholder="Search for Your Products"
             type="text"
           />
           <span className="text-zinc-700">⌕</span>
