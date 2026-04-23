@@ -12,6 +12,7 @@ type SearchInputProps = {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   suggestions: typeof products;
   showSuggestions: boolean;
+  onSuggestionSelect: () => void;
   wrapperClassName: string;
   inputClassName: string;
   placeholder: string;
@@ -23,6 +24,7 @@ function SearchInput({
   onSubmit,
   suggestions,
   showSuggestions,
+  onSuggestionSelect,
   wrapperClassName,
   inputClassName,
   placeholder
@@ -50,6 +52,7 @@ function SearchInput({
               key={product._id}
               href={`/products?q=${encodeURIComponent(product.name)}`}
               className="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-zinc-50"
+              onClick={onSuggestionSelect}
             >
               <img
                 src={product.image}
@@ -97,6 +100,7 @@ export function Navbar() {
   function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const normalizedQuery = query.trim();
+    setQuery('');
 
     if (!normalizedQuery) {
       router.push('/products');
@@ -128,6 +132,7 @@ export function Navbar() {
             onSubmit={handleSearchSubmit}
             suggestions={suggestions}
             showSuggestions={showSuggestions}
+            onSuggestionSelect={() => setQuery('')}
             wrapperClassName="flex w-full items-center gap-2 rounded-full bg-white px-3 py-2 text-sm text-zinc-500"
             inputClassName="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
             placeholder="Search for Your Products"
@@ -187,6 +192,7 @@ export function Navbar() {
           onSubmit={handleSearchSubmit}
           suggestions={suggestions}
           showSuggestions={showSuggestions}
+          onSuggestionSelect={() => setQuery('')}
           wrapperClassName="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-500 shadow-sm"
           inputClassName="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
           placeholder="Search groceries"
