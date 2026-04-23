@@ -17,7 +17,27 @@ export type User = {
   _id: string;
   name: string;
   email: string;
+  phoneNumber?: string;
+  dateOfBirth?: string;
+  role?: 'customer' | 'vendor';
   isAdmin?: boolean;
+};
+
+export type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+export type RegisterPayload = LoginPayload & {
+  name: string;
+  confirmPassword: string;
+  phoneNumber?: string;
+  dateOfBirth?: string;
+  role?: 'customer' | 'vendor';
+};
+
+export type AuthResponse = User & {
+  token: string;
 };
 
 export type Order = {

@@ -1,3 +1,5 @@
+import { products } from '@/lib/products';
+
 const categoryFilters = [
   'All Categories',
   'Price',
@@ -6,14 +8,6 @@ const categoryFilters = [
   'Material',
   'Offer',
   'All Filters'
-];
-
-const products = [
-  { id: '1', name: 'Dairy Milk Silk Oreo', shop: 'Chocolate Pvt Ltd', weight: '500 gm.', price: 'Rs. 200', emoji: '' },
-  { id: '2', name: 'Massage Gun Deep Tissue Massager', shop: 'Everyday Online Pvt.Ltd',  price: 'Rs. 1500', emoji: '' },
-  { id: '3', name: 'Beetroot', shop: 'Local shop', price: 'Rs. 175', emoji: '' },
-  { id: '4', name: 'Szam amm', shop: 'Process food',  price: 'Rs. 135', emoji: '' },
-  { id: '5', name: 'Beef Mixed', shop: 'Cut Bone',  price: 'Rs. 125', emoji: '' }
 ];
 
 export default function HomePage() {
@@ -85,16 +79,19 @@ export default function HomePage() {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {products.map((product) => (
               <article
-                key={product.id}
+                key={product._id}
                 className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
               >
-                <div className="grid h-32 place-items-center rounded-lg bg-zinc-50 text-6xl">
-                  {product.emoji}
-                </div>
-                <h3 className="mt-4 text-2xl font-medium leading-8 text-[#143940]">{product.name}</h3>
-                <p className="text-xl text-[#143940]">({product.shop})</p>
-                <p className="mt-1 text-sm text-zinc-500">{product.weight}</p>
-                <p className="mt-2 text-5xl font-extrabold tracking-tight text-[#0B343A]">{product.price}</p>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-32 w-full rounded-lg bg-zinc-50 object-cover"
+                  loading="lazy"
+                />
+                <h3 className="mt-4 text-lg font-semibold leading-7 text-[#143940]">{product.name}</h3>
+                <p className="text-sm text-zinc-500">{product.category}</p>
+                <p className="mt-1 text-sm text-zinc-600 line-clamp-2">{product.description}</p>
+                <p className="mt-3 text-3xl font-extrabold tracking-tight text-[#0B343A]">Rs. {product.price}</p>
               </article>
             ))}
           </div>

@@ -1,6 +1,20 @@
+"use client";
+
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { clearAuth, getStoredAuth, type StoredAuth } from '@/lib/auth';
 
 export function Navbar() {
+  const router = useRouter();
+  const [auth, setAuth] = useState<StoredAuth | null>(getStoredAuth());
+
+  function handleLogout() {
+    clearAuth();
+    setAuth(null);
+    router.push('/login');
+  }
+
   return (
     <header className="px-4 pt-4 sm:px-6 sm:pt-6">
       <div className="flex w-full items-center gap-3 rounded-2xl bg-[#0E4A4E] px-4 py-3 text-white shadow-lg sm:gap-4 sm:px-5">
@@ -40,18 +54,35 @@ export function Navbar() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/login"
-            className="rounded-full border border-white/40 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
-          >
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-full bg-[#F6C53E] px-4 py-2 text-sm font-semibold text-[#15333A] transition hover:brightness-95"
-          >
-            Register
-          </Link>
+          {auth ? (
+            <>
+              <div className="hidden rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-emerald-50 sm:block">
+                {auth.user.name}
+              </div>
+              <button
+                className="rounded-full border border-white/40 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                type="button"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="rounded-full border border-white/40 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="rounded-full bg-[#F6C53E] px-4 py-2 text-sm font-semibold text-[#15333A] transition hover:brightness-95"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
 

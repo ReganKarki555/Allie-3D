@@ -1,17 +1,31 @@
-import type { Order, Product, User } from '@/types';
+import type { AuthResponse, LoginPayload, Order, Product, RegisterPayload, User } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
 
-async function requestJson<T>(path: string): Promise<T> {
+type RequestOptions = {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  body?: unknown;
+  token?: string;
+};
+
+async function requestJson<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
-    cache: 'no-store'
+    cache: 'no-store',
+    method: options.method ?? 'GET',
+    headers: {
+      ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(options.token ? { Authorization: `Bearer ${options.token}` } : {})
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined
   });
 
+  const data = await response.json().catch(() => null);
+
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    throw new Error(data?.message ?? `Request failed with status ${response.status}`);
   }
 
-  return response.json() as Promise<T>;
+  return data as T;
 }
 
 export function getProducts(): Promise<Product[]> {
@@ -22,8 +36,24 @@ export function getProductById(id: string): Promise<Product> {
   return requestJson<Product>(`/products/${id}`);
 }
 
-export function getCurrentUser(): Promise<User> {
-  return requestJson<User>('/users/profile');
+export function registerUser(payload: RegisterPayload): Promise<AuthResponse> {
+  return requestJson<AuthResponse>('/users/register', {
+    method: 'POST',
+    body: payload
+  });
+}
+
+export function loginUser(payload: LoginPayload): Promise<AuthResponse> {
+  return requestJson<AuthResponse>('/users/login', {
+    method: 'POST',
+    body: payload
+  });
+}
+
+export function getCurrentUser(token: string): Promise<User> {
+  return requestJson<User>('/users/profile', {
+    token
+  });
 }
 
 export function getOrders(): Promise<Order[]> {

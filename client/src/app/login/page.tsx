@@ -1,6 +1,35 @@
+"use client";
+
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { loginUser } from '@/lib/api';
+import { saveAuth } from '@/lib/auth';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const auth = await loginUser({ email, password });
+      saveAuth(auth);
+      router.push('/');
+      router.refresh();
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Unable to sign in');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <section className="relative flex min-h-[calc(100vh-106px)] items-center overflow-hidden px-4 py-4 sm:px-6 sm:py-5">
       <div className="pointer-events-none absolute right-8 top-6 hidden text-[170px] leading-none text-[#0E4A4E]/5 lg:block">
@@ -23,7 +52,7 @@ export default function LoginPage() {
           <h2 className="text-2xl font-semibold tracking-tight text-zinc-800">Welcome Back</h2>
           <p className="mt-1 text-sm text-zinc-600">Enter your credentials to access your account.</p>
 
-          <form className="mt-4 space-y-4">
+          <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
             <label className="block">
               <span className="text-xs font-bold uppercase tracking-[0.08em] text-zinc-600">Email Address</span>
               <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2">
@@ -31,7 +60,10 @@ export default function LoginPage() {
                 <input
                   type="email"
                   placeholder="email@email.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
+                  required
                 />
               </div>
             </label>
@@ -48,7 +80,10 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                   className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-500 focus:outline-none"
+                  required
                 />
               </div>
             </label>
@@ -59,12 +94,19 @@ export default function LoginPage() {
             </label>
 
             <button
-              type="button"
+              type="submit"
+              disabled={isSubmitting}
               className="w-full rounded-lg bg-[#0E4A4E] px-4 py-2.5 text-base font-semibold text-white shadow transition hover:brightness-95"
             >
-              Sign In to Dashboard →
+              {isSubmitting ? 'Signing In...' : 'Sign In to Dashboard →'}
             </button>
           </form>
+
+          {error ? (
+            <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </p>
+          ) : null}
 
           <div className="mt-5 border-t border-zinc-200 pt-4 text-center text-sm text-zinc-600">
             New to Allie?
