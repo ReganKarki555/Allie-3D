@@ -1,8 +1,58 @@
-Advanced E-Commerce with 3D Product View
-This repository is organized as a clean monorepo-style structure with separate Frontend and Backend roots.
+# Ecommerce Project Structure
 
-Top-Level Layout
-Frontend/frontend - Next.js + React + TypeScript application
-Backend/backend - Express + Node.js API with MongoDB integration
-Purpose
-The folder layout is designed to be easy to navigate, scalable for hiring review, and ready for real production development around product browsing, 3D previews, cart, checkout, auth, and order management.
+This workspace is organized as a monorepo with a Next.js frontend, an Express backend, and MongoDB as the database.
+
+Frontend rules:
+- Use Next.js + React + TypeScript
+- Use Tailwind CSS only for styling
+
+## Root Layout
+
+```text
+ecommerce-project/
+├── client/
+├── server/
+├── README.md
+├── .gitignore
+└── package.json
+```
+
+## Client
+
+```text
+client/
+├── public/
+├── src/
+│   ├── app/
+│   ├── components/
+│   ├── lib/
+│   ├── hooks/
+│   ├── context/
+│   ├── types/
+│   └── styles/
+├── next.config.js
+├── next-env.d.ts
+├── postcss.config.js
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+└── .env.local
+```
+
+## Server
+
+```text
+server/
+├── src/
+│   ├── config/
+│   ├── models/
+│   ├── controllers/
+│   ├── routes/
+│   ├── middleware/
+│   ├── utils/
+│   └── server.js
+├── package.json
+└── .env
+```
+
+The scaffold is ready for product browsing, product details, cart, checkout, auth, and order APIs.
