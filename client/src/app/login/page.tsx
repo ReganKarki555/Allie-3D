@@ -30,7 +30,7 @@ export default function LoginPage() {
                 <span className="text-zinc-500">✉</span>
                 <input
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="email@email.com"
                   className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
                 />
               </div>

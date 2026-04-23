@@ -9,11 +9,11 @@ const categoryFilters = [
 ];
 
 const products = [
-  { id: '1', name: 'Italian Avocado', shop: 'Local shop', weight: '500 gm.', price: '14.29$', emoji: '🥑' },
-  { id: '2', name: 'Cold drinks', shop: 'Sprite', weight: '500 gm.', price: '06.29$', emoji: '🥤' },
-  { id: '3', name: 'Beetroot', shop: 'Local shop', weight: '500 gm.', price: '17.29$', emoji: '🧅' },
-  { id: '4', name: 'Szam amm', shop: 'Process food', weight: '500 gm.', price: '13.29$', emoji: '🍱' },
-  { id: '5', name: 'Beef Mixed', shop: 'Cut Bone', weight: '500 gm.', price: '12.29$', emoji: '🥩' }
+  { id: '1', name: 'Dairy Milk Silk Oreo', shop: 'Chocolate Pvt Ltd', weight: '500 gm.', price: 'Rs. 200', emoji: '' },
+  { id: '2', name: 'Massage Gun Deep Tissue Massager', shop: 'Everyday Online Pvt.Ltd',  price: 'Rs. 1500', emoji: '' },
+  { id: '3', name: 'Beetroot', shop: 'Local shop', price: 'Rs. 175', emoji: '' },
+  { id: '4', name: 'Szam amm', shop: 'Process food',  price: 'Rs. 135', emoji: '' },
+  { id: '5', name: 'Beef Mixed', shop: 'Cut Bone',  price: 'Rs. 125', emoji: '' }
 ];
 
 export default function HomePage() {
@@ -25,9 +25,9 @@ export default function HomePage() {
             <div className="relative flex flex-col justify-center bg-[#9A1E27] px-8 py-10 text-[#F7D89B] sm:px-10">
               <div className="absolute -right-10 top-0 hidden h-full w-20 rounded-l-[100px] bg-[#9A1E27] lg:block" />
               <p className="text-3xl font-extrabold uppercase leading-tight sm:text-4xl">
-                Get 10% Caseback
+                Get 5% Cash Back
                 <br />
-                on Shopping $150
+                on Shopping Above Rs. 2,999
               </p>
               <p className="mt-4 max-w-xs text-sm text-[#F4D4AF]/90">
                 Shopping is a bit of a relaxing hobby for me, which is sometimes troubling for the bank balance.
