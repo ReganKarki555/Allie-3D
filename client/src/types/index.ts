@@ -18,7 +18,6 @@ export type User = {
   name: string;
   email: string;
   phoneNumber?: string;
-  dateOfBirth?: string;
   role?: 'customer' | 'vendor';
   isAdmin?: boolean;
 };
@@ -32,7 +31,6 @@ export type RegisterPayload = LoginPayload & {
   name: string;
   confirmPassword: string;
   phoneNumber?: string;
-  dateOfBirth?: string;
   role?: 'customer' | 'vendor';
 };
 

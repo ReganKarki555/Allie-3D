@@ -113,14 +113,7 @@ export function Navbar() {
   return (
     <header className="px-4 pt-4 sm:px-6 sm:pt-6">
       <div className="flex w-full items-center gap-3 rounded-2xl bg-[#0E4A4E] px-4 py-3 text-white shadow-lg sm:gap-4 sm:px-5">
-        <button
-          aria-label="Open menu"
-          className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-lg"
-          type="button"
-        >
-          ≡
-        </button>
-
+        
         <Link href="/" className="whitespace-nowrap text-xl font-semibold tracking-tight">
           Allie
         </Link>
@@ -145,12 +138,24 @@ export function Navbar() {
           <span className="ml-1 font-semibold text-yellow-300">place</span>
         </p>
 
-        <Link
-          href="/cart"
+        <button
+          type="button"
+          onClick={() => {
+            const currentAuth = getStoredAuth();
+            const role = currentAuth?.user.role;
+            const isAllowedRole = role === 'customer' || role === 'vendor';
+
+            if (!currentAuth || !isAllowedRole) {
+              router.push('/login?redirect=%2Fcart');
+              return;
+            }
+
+            router.push('/cart');
+          }}
           className="grid h-10 w-10 place-items-center rounded-full bg-white text-sm font-semibold text-[#0E4A4E]"
         >
           🛒
-        </Link>
+        </button>
 
         <div className="flex items-center gap-2">
           {auth ? (

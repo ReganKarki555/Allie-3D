@@ -23,7 +23,6 @@ export function saveAuth(auth: AuthResponse) {
       name: auth.name,
       email: auth.email,
       phoneNumber: auth.phoneNumber,
-      dateOfBirth: auth.dateOfBirth,
       role: auth.role,
       isAdmin: auth.isAdmin
     }
