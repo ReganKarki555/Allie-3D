@@ -1,17 +1,5 @@
 import { ProductCard } from '@/components/ProductCard';
-import type { Product } from '@/types';
-
-const products: Product[] = [
-  {
-    _id: '1',
-    name: 'Aurora Headphones',
-    description: 'Premium wireless headphones with immersive audio.',
-    price: 249,
-    image: '/images/headphones.png',
-    category: 'Audio',
-    countInStock: 12
-  }
-];
+import { products } from '@/lib/products';
 
 export default function ProductsPage() {
   return (

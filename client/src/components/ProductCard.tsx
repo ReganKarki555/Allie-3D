@@ -9,7 +9,12 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <article className="rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <div className="aspect-square rounded-2xl bg-zinc-100" />
+      <img
+        src={product.image}
+        alt={product.name}
+        className="aspect-square w-full rounded-2xl bg-zinc-100 object-cover"
+        loading="lazy"
+      />
       <div className="mt-4 space-y-2">
         <h3 className="text-lg font-semibold text-zinc-950">{product.name}</h3>
         <p className="line-clamp-2 text-sm text-zinc-600">{product.description}</p>

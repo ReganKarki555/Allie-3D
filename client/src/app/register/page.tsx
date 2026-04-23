@@ -1,6 +1,49 @@
+"use client";
+
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { registerUser } from '@/lib/api';
+import { saveAuth } from '@/lib/auth';
 
 export default function RegisterPage() {
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [role, setRole] = useState<'customer' | 'vendor'>('customer');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const auth = await registerUser({
+        name,
+        email,
+        phoneNumber,
+        dateOfBirth,
+        role,
+        password,
+        confirmPassword
+      });
+
+      saveAuth(auth);
+      router.push('/');
+      router.refresh();
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Unable to create your account');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <section className="px-4 py-4 sm:px-6 sm:py-5">
       <div className="mx-auto w-full max-w-5xl rounded-2xl border border-zinc-200 bg-white/95 p-3 shadow-xl sm:p-4">
@@ -31,7 +74,7 @@ export default function RegisterPage() {
             <h2 className="text-4xl font-semibold tracking-tight text-zinc-800">Create Account</h2>
             <p className="mt-1 text-sm text-zinc-600">Please complete your details to start your journey.</p>
 
-            <form className="mt-5 space-y-4">
+            <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
               <label className="block">
                 <span className="text-xs font-bold uppercase tracking-[0.08em] text-zinc-600">Full Name</span>
                 <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2">
@@ -39,7 +82,10 @@ export default function RegisterPage() {
                   <input
                     type="text"
                     placeholder="Full Name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
                     className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
+                    required
                   />
                 </div>
               </label>
@@ -52,7 +98,10 @@ export default function RegisterPage() {
                     <input
                       type="email"
                       placeholder="email@email.com"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
                       className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
+                      required
                     />
                   </div>
                 </label>
@@ -64,6 +113,8 @@ export default function RegisterPage() {
                     <input
                       type="tel"
                       placeholder="+977 9800000000"
+                      value={phoneNumber}
+                      onChange={(event) => setPhoneNumber(event.target.value)}
                       className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
                     />
                   </div>
@@ -78,6 +129,8 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       placeholder="MM/DD/YYYY"
+                      value={dateOfBirth}
+                      onChange={(event) => setDateOfBirth(event.target.value)}
                       className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
                     />
                   </div>
@@ -87,10 +140,13 @@ export default function RegisterPage() {
                   <span className="text-xs font-bold uppercase tracking-[0.08em] text-zinc-600">Role Selection</span>
                   <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm text-zinc-600">
                     <span>▣</span>
-                    <select className="w-full bg-transparent text-sm text-zinc-700 focus:outline-none">
-                      <option>Select Role</option>
-                      <option>Customer</option>
-                      <option>Vendor</option>
+                    <select
+                      className="w-full bg-transparent text-sm text-zinc-700 focus:outline-none"
+                      value={role}
+                      onChange={(event) => setRole(event.target.value as 'customer' | 'vendor')}
+                    >
+                      <option value="customer">Customer</option>
+                      <option value="vendor">Vendor</option>
                     </select>
                   </div>
                 </label>
@@ -104,7 +160,10 @@ export default function RegisterPage() {
                     <input
                       type="password"
                       placeholder="••••••••"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
                       className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-500 focus:outline-none"
+                      required
                     />
                   </div>
                 </label>
@@ -116,19 +175,29 @@ export default function RegisterPage() {
                     <input
                       type="password"
                       placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(event) => setConfirmPassword(event.target.value)}
                       className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-500 focus:outline-none"
+                      required
                     />
                   </div>
                 </label>
               </div>
 
               <button
-                type="button"
+                type="submit"
+                disabled={isSubmitting}
                 className="mt-1 w-full rounded-lg bg-[#0E4A4E] px-4 py-2.5 text-base font-semibold text-white shadow transition hover:brightness-95"
               >
-                Complete Registration →
+                {isSubmitting ? 'Creating Account...' : 'Complete Registration →'}
               </button>
             </form>
+
+            {error ? (
+              <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                {error}
+              </p>
+            ) : null}
 
             <div className="mt-4 rounded-lg border border-[#0E4A4E]/10 bg-[#0E4A4E]/5 px-4 py-3 text-sm text-zinc-700">
               Your registration will be reviewed. Access is granted after account verification.
