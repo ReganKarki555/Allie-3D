@@ -1,7 +1,7 @@
 import { products } from '@/lib/products';
 
 const categoryFilters = [
-  'All Categories',
+  ,
 ];
 
 export default function HomePage() {
@@ -43,7 +43,7 @@ export default function HomePage() {
         </article>
 
         <section className="mt-10">
-          <h1 className="text-3xl font-bold tracking-tight text-[#103A42] sm:text-4xl">Allie / All category</h1>
+          
 
           <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap gap-2">

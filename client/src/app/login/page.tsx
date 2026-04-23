@@ -2,16 +2,20 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { loginUser } from '@/lib/api';
 import { saveAuth } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const redirectTo = searchParams.get('redirect');
+  const safeRedirectTo = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/';
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -21,7 +25,7 @@ export default function LoginPage() {
     try {
       const auth = await loginUser({ email, password });
       saveAuth(auth);
-      router.push('/');
+      router.push(safeRedirectTo);
       router.refresh();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Unable to sign in');

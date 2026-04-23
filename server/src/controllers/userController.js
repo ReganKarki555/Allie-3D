@@ -8,7 +8,6 @@ function sendAuthResponse(res, user, statusCode) {
     name: user.name,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    dateOfBirth: user.dateOfBirth,
     role: user.role,
     isAdmin: user.isAdmin,
     token: generateToken(user._id)
@@ -23,7 +22,6 @@ async function registerUser(req, res, next) {
       password,
       confirmPassword,
       phoneNumber,
-      dateOfBirth,
       role
     } = req.body;
 
@@ -51,7 +49,6 @@ async function registerUser(req, res, next) {
       email,
       password: hashedPassword,
       phoneNumber,
-      dateOfBirth,
       role: role === 'vendor' ? 'vendor' : 'customer'
     });
 

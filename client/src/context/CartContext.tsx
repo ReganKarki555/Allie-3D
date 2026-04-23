@@ -3,6 +3,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { CartItem, Product } from '@/types';
+import { getStoredAuth } from '@/lib/auth';
 
 type CartContextValue = {
   items: CartItem[];
@@ -24,6 +25,17 @@ export function CartProvider({ children }: CartProviderProps) {
   const value = useMemo<CartContextValue>(() => ({
     items,
     addItem(product: Product) {
+      const auth = getStoredAuth();
+      const role = auth?.user.role;
+      const isAllowedRole = role === 'customer' || role === 'vendor';
+
+      if (!auth || !isAllowedRole) {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login?redirect=%2Fproducts';
+        }
+        return;
+      }
+
       setItems((currentItems) => {
         const existingItem = currentItems.find((item) => item._id === product._id);
 

@@ -2,21 +2,24 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { registerUser } from '@/lib/api';
 import { saveAuth } from '@/lib/auth';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
   const [role, setRole] = useState<'customer' | 'vendor'>('customer');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const redirectTo = searchParams.get('redirect');
+  const safeRedirectTo = redirectTo && redirectTo.startsWith('/') ? redirectTo : '/';
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -28,14 +31,13 @@ export default function RegisterPage() {
         name,
         email,
         phoneNumber,
-        dateOfBirth,
         role,
         password,
         confirmPassword
       });
 
       saveAuth(auth);
-      router.push('/');
+      router.push(safeRedirectTo);
       router.refresh();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Unable to create your account');
@@ -121,36 +123,20 @@ export default function RegisterPage() {
                 </label>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block">
-                  <span className="text-xs font-bold uppercase tracking-[0.08em] text-zinc-600">Date Of Birth</span>
-                  <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2">
-                    <span className="text-zinc-500">◷</span>
-                    <input
-                      type="text"
-                      placeholder="MM/DD/YYYY"
-                      value={dateOfBirth}
-                      onChange={(event) => setDateOfBirth(event.target.value)}
-                      className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
-                    />
-                  </div>
-                </label>
-
-                <label className="block">
-                  <span className="text-xs font-bold uppercase tracking-[0.08em] text-zinc-600">Role Selection</span>
-                  <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm text-zinc-600">
-                    <span>▣</span>
-                    <select
-                      className="w-full bg-transparent text-sm text-zinc-700 focus:outline-none"
-                      value={role}
-                      onChange={(event) => setRole(event.target.value as 'customer' | 'vendor')}
-                    >
-                      <option value="customer">Customer</option>
-                      <option value="vendor">Vendor</option>
-                    </select>
-                  </div>
-                </label>
-              </div>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[0.08em] text-zinc-600">Role Selection</span>
+                <div className="mt-1.5 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm text-zinc-600">
+                  <span>▣</span>
+                  <select
+                    className="w-full bg-transparent text-sm text-zinc-700 focus:outline-none"
+                    value={role}
+                    onChange={(event) => setRole(event.target.value as 'customer' | 'vendor')}
+                  >
+                    <option value="customer">Customer</option>
+                    <option value="vendor">Vendor</option>
+                  </select>
+                </div>
+              </label>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block">
