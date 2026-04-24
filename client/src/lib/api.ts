@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginPayload, Order, Product, RegisterPayload, User } from '@/types';
+import type { AuthResponse, CreateProductPayload, LoginPayload, Order, Product, RegisterPayload, User } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api';
 
@@ -34,6 +34,14 @@ export function getProducts(): Promise<Product[]> {
 
 export function getProductById(id: string): Promise<Product> {
   return requestJson<Product>(`/products/${id}`);
+}
+
+export function createProduct(payload: CreateProductPayload, token: string): Promise<Product> {
+  return requestJson<Product>('/products', {
+    method: 'POST',
+    body: payload,
+    token
+  });
 }
 
 export function registerUser(payload: RegisterPayload): Promise<AuthResponse> {

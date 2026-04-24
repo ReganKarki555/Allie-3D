@@ -186,20 +186,20 @@ function getFallbackGallery(product: Product) {
   return uniqueStrings([product.image, ...categoryImages]).slice(0, 4);
 }
 
-function getSimilarProducts(product: Product) {
-  const sameCategory = products.filter((candidate) => candidate._id !== product._id && candidate.category === product.category);
+function getSimilarProducts(product: Product, catalog: Product[]) {
+  const sameCategory = catalog.filter((candidate) => candidate._id !== product._id && candidate.category === product.category);
 
   if (sameCategory.length > 0) {
     return sameCategory.slice(0, 4);
   }
 
-  return products
+  return catalog
     .filter((candidate) => candidate._id !== product._id)
     .sort((left, right) => Math.abs(left.price - product.price) - Math.abs(right.price - product.price))
     .slice(0, 4);
 }
 
-export function getProductDetails(product: Product): ProductDetails {
+export function getProductDetails(product: Product, catalog: Product[] = products): ProductDetails {
   const delivery = categoryDelivery[product.category] ?? {
     time: '2-4 business days',
     charge: 4.99
@@ -244,7 +244,7 @@ export function getProductDetails(product: Product): ProductDetails {
       { label: 'Quality', value: 'Verified marketplace product' }
     ],
     reviews: product.reviews ?? reviews,
-    similarProducts: getSimilarProducts(product),
+    similarProducts: getSimilarProducts(product, catalog),
     rating: product.rating ?? Number(averageRating.toFixed(1)),
     numReviews: product.numReviews ?? reviews.length
   };

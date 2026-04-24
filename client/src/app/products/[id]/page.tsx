@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductDetailHero } from '@/components/ProductDetailHero';
 import { findProductById, getProductDetails } from '@/lib/productDetails';
+import { getProductById, getProducts } from '@/lib/api';
+import { mergeProducts } from '@/lib/products';
 
 type ProductDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -10,13 +12,29 @@ type ProductDetailPageProps = {
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { id } = await params;
-  const product = findProductById(id);
+  let product = findProductById(id);
+  let catalog = mergeProducts([]);
+
+  try {
+    const apiProducts = await getProducts();
+    catalog = mergeProducts(apiProducts);
+  } catch {
+    catalog = mergeProducts([]);
+  }
+
+  if (!product) {
+    try {
+      product = await getProductById(id);
+    } catch {
+      product = undefined;
+    }
+  }
 
   if (!product) {
     notFound();
   }
 
-  const details = getProductDetails(product);
+  const details = getProductDetails(product, catalog);
 
   function renderStars(rating: number) {
     return Array.from({ length: 5 }, (_, index) => (index < Math.round(rating) ? '★' : '☆')).join('');

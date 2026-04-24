@@ -182,3 +182,24 @@ export const products: Product[] = [
     countInStock: 27
   }
 ];
+
+export function mergeProducts(apiProducts: Product[]) {
+  const seen = new Set<string>();
+  const merged: Product[] = [];
+
+  for (const product of apiProducts) {
+    if (!seen.has(product._id)) {
+      seen.add(product._id);
+      merged.push(product);
+    }
+  }
+
+  for (const product of products) {
+    if (!seen.has(product._id)) {
+      seen.add(product._id);
+      merged.push(product);
+    }
+  }
+
+  return merged;
+}
