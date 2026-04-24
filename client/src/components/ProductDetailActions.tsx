@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStoredAuth } from '@/lib/auth';
 import { useCart } from '@/hooks/useCart';
@@ -14,6 +14,27 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
   const router = useRouter();
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [showAddedToast, setShowAddedToast] = useState(false);
+  const [toastTrigger, setToastTrigger] = useState(0);
+
+  useEffect(() => {
+    if (!showAddedToast) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowAddedToast(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [showAddedToast, toastTrigger]);
+
+  function triggerAddedToast() {
+    setShowAddedToast(true);
+    setToastTrigger((current) => current + 1);
+  }
 
   function ensureAllowedAccess() {
     const auth = getStoredAuth();
@@ -29,9 +50,7 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
   }
 
   function addSelectedQuantity() {
-    for (let index = 0; index < quantity; index += 1) {
-      addItem(product);
-    }
+    return addItem(product, quantity);
   }
 
   function handleAddToCart() {
@@ -39,7 +58,11 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
       return;
     }
 
-    addSelectedQuantity();
+    const added = addSelectedQuantity();
+
+    if (added) {
+      triggerAddedToast();
+    }
   }
 
   function handleBuyNow() {
@@ -84,13 +107,20 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
         >
           Buy Now
         </button>
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          className="rounded-full bg-[#0E4A4E] px-5 py-3 text-sm font-semibold text-white transition hover:brightness-95"
-        >
-          Add to Cart
-        </button>
+        <div className="relative">
+          {showAddedToast && (
+            <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 rounded-md bg-[#0E4A4E] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+              Added to the cart
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="rounded-full bg-[#0E4A4E] px-5 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+          >
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
   );

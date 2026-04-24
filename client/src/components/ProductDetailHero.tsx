@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ProductDetails } from '@/lib/productDetails';
 import { formatPrice } from '@/lib/helpers';
@@ -30,10 +30,31 @@ export function ProductDetailHero({ details }: ProductDetailHeroProps) {
   const router = useRouter();
   const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [showAddedToast, setShowAddedToast] = useState(false);
+  const [toastTrigger, setToastTrigger] = useState(0);
 
   const highlights = useMemo(() => buildHighlights(details), [details]);
   const mrp = Math.max(details.price + 1, Math.round(details.price * 1.35));
   const discountPercent = Math.max(5, Math.round(((mrp - details.price) / mrp) * 100));
+
+  useEffect(() => {
+    if (!showAddedToast) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowAddedToast(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [showAddedToast, toastTrigger]);
+
+  function triggerAddedToast() {
+    setShowAddedToast(true);
+    setToastTrigger((current) => current + 1);
+  }
 
   function getAllowedAuth() {
     const auth = getStoredAuth();
@@ -43,9 +64,7 @@ export function ProductDetailHero({ details }: ProductDetailHeroProps) {
   }
 
   function addSelectedQuantity() {
-    for (let index = 0; index < quantity; index += 1) {
-      addItem(details);
-    }
+    return addItem(details, quantity);
   }
 
   function handleAddToCart() {
@@ -54,7 +73,11 @@ export function ProductDetailHero({ details }: ProductDetailHeroProps) {
       return;
     }
 
-    addSelectedQuantity();
+    const added = addSelectedQuantity();
+
+    if (added) {
+      triggerAddedToast();
+    }
   }
 
   function handleBuyNow() {
@@ -159,13 +182,20 @@ export function ProductDetailHero({ details }: ProductDetailHeroProps) {
           >
             Buy Now
           </button>
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            className="rounded-xl bg-[#D9782F] px-5 py-3 text-base font-semibold text-white transition hover:brightness-95"
-          >
-            Add to Cart
-          </button>
+          <div className="relative">
+            {showAddedToast && (
+              <div className="absolute bottom-full left-1/2 z-20 mb-2 -translate-x-1/2 rounded-md bg-[#0E4A4E] px-3 py-1.5 text-xs font-semibold text-white shadow-lg">
+                Added to the cart
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              className="w-full rounded-xl bg-[#D9782F] px-5 py-3 text-base font-semibold text-white transition hover:brightness-95"
+            >
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
 
