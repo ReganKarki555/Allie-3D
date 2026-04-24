@@ -7,6 +7,27 @@ export type Product = {
   category: string;
   countInStock: number;
   rating?: number;
+  numReviews?: number;
+  sellerName?: string;
+  deliveryTime?: string;
+  deliveryCharge?: number;
+  gallery?: string[];
+  deliveryOptions?: Array<{
+    label: string;
+    description: string;
+  }>;
+  specifications?: Array<{
+    label: string;
+    value: string;
+  }>;
+  reviews?: Array<{
+    id: string;
+    name: string;
+    rating: number;
+    date: string;
+    comment: string;
+    verified?: boolean;
+  }>;
 };
 
 export type CartItem = Product & {

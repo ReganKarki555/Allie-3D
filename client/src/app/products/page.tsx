@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { ProductCard } from '@/components/ProductCard';
 import { products } from '@/lib/products';
 
@@ -32,8 +31,9 @@ type SortOrder = 'none' | 'price-low-high' | 'price-high-low';
 type RatingFilter = 'all' | '5' | '4' | '3' | '2' | '1';
 
 export default function ProductsPage() {
-  const searchParams = useSearchParams();
-  const query = searchParams.get('q')?.trim() ?? '';
+  const query = typeof window === 'undefined'
+    ? ''
+    : new URLSearchParams(window.location.search).get('q')?.trim() ?? '';
   const normalizedQuery = query.toLowerCase();
 
   const [sortOrder, setSortOrder] = useState<SortOrder>('none');

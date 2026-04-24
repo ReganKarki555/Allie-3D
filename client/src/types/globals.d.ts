@@ -7,6 +7,7 @@ declare module 'react' {
   export type ButtonHTMLAttributes<T> = Record<string, any>;
   export function createContext<T>(defaultValue: T): any;
   export function useContext<T>(context: any): T;
+  export function useEffect(effect: () => void | (() => void), deps?: readonly unknown[]): void;
   export function useMemo<T>(factory: () => T, deps: readonly unknown[]): T;
   export function useState<T>(initialState: T): [T, (value: T | ((previousState: T) => T)) => void];
 }
