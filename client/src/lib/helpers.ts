@@ -1,10 +1,15 @@
 import type { CartItem } from '@/types';
 
+const USD_TO_NPR_RATE = 133;
+
 export function formatPrice(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  const nprAmount = amount * USD_TO_NPR_RATE;
+
+  return new Intl.NumberFormat('en-NP', {
     style: 'currency',
-    currency: 'USD'
-  }).format(amount);
+    currency: 'NPR',
+    maximumFractionDigits: 0
+  }).format(nprAmount);
 }
 
 export function calculateCartTotal(items: CartItem[]): number {
