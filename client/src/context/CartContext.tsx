@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import type { CartItem, Product } from '@/types';
 import { getStoredAuth } from '@/lib/auth';
 
-type CartContextValue = {
+export type CartContextValue = {
   items: CartItem[];
   addItem: (product: Product) => void;
   removeItem: (productId: string) => void;
@@ -68,8 +68,8 @@ export function CartProvider({ children }: CartProviderProps) {
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-export function useCartContext() {
-  const context = useContext(CartContext);
+export function useCartContext(): CartContextValue {
+  const context = useContext(CartContext) as CartContextValue | undefined;
 
   if (!context) {
     throw new Error('useCartContext must be used within a CartProvider');
