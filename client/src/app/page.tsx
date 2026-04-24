@@ -1,4 +1,5 @@
 import { products } from '@/lib/products';
+import { ProductCard } from '@/components/ProductCard';
 
 const categoryFilters = [
   ,
@@ -65,23 +66,9 @@ export default function HomePage() {
             
           </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
-              <article
-                key={product._id}
-                className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-32 w-full rounded-lg bg-zinc-50 object-cover"
-                  loading="lazy"
-                />
-                <h3 className="mt-4 text-lg font-semibold leading-7 text-[#143940]">{product.name}</h3>
-                <p className="text-sm text-zinc-500">{product.category}</p>
-                <p className="mt-1 text-sm text-zinc-600 line-clamp-2">{product.description}</p>
-                <p className="mt-3 text-3xl font-extrabold tracking-tight text-[#0B343A]">Rs. {product.price}</p>
-              </article>
+              <ProductCard key={product._id} product={product} />
             ))}
           </div>
         </section>
