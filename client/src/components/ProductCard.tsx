@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
       <Link
         href={`/products/${product._id}`}
         aria-label={`Open details for ${product.name}`}
-        className="absolute inset-0 z-0 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0E4A4E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        className="absolute inset-0 z-20 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0E4A4E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       />
       <img
         src={product.image}
@@ -52,7 +52,7 @@ export function ProductCard({ product }: ProductCardProps) {
             <button
               type="button"
               onClick={handleAddToCart}
-              className="relative z-10 rounded-full bg-[#0E4A4E] px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-95"
+              className="relative z-30 rounded-full bg-[#0E4A4E] px-3 py-1.5 text-xs font-semibold text-white transition hover:brightness-95"
             >
               Add to Cart
             </button>
