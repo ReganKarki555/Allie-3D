@@ -17,7 +17,11 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function getSafeRedirectTo() {
+  function getSafeRedirectTo(roleValue?: 'customer' | 'vendor') {
+    if (roleValue === 'vendor') {
+      return '/vendor/dashboard';
+    }
+
     if (typeof window === 'undefined') {
       return '/';
     }
@@ -43,7 +47,7 @@ export default function RegisterPage() {
       });
 
       saveAuth(auth);
-      router.push(getSafeRedirectTo());
+      router.push(getSafeRedirectTo(auth.role));
       router.refresh();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Unable to create your account');

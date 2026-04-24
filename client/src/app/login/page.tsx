@@ -13,7 +13,11 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function getSafeRedirectTo() {
+  function getSafeRedirectTo(role?: 'customer' | 'vendor') {
+    if (role === 'vendor') {
+      return '/vendor/dashboard';
+    }
+
     if (typeof window === 'undefined') {
       return '/';
     }
@@ -31,7 +35,7 @@ export default function LoginPage() {
     try {
       const auth = await loginUser({ email, password });
       saveAuth(auth);
-      router.push(getSafeRedirectTo());
+      router.push(getSafeRedirectTo(auth.role));
       router.refresh();
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Unable to sign in');
