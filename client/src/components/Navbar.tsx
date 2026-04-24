@@ -160,6 +160,14 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           {auth ? (
             <>
+              {auth.user.role === 'vendor' && (
+                <Link
+                  href="/vendor/dashboard"
+                  className="rounded-full border border-white/40 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
+                >
+                  Vendor Dashboard
+                </Link>
+              )}
               <div className="hidden rounded-full border border-white/20 px-4 py-2 text-sm font-medium text-emerald-50 sm:block">
                 {auth.user.name}
               </div>
