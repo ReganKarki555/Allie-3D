@@ -1,4 +1,5 @@
 import { products } from '@/lib/products';
+import { formatPrice } from '@/lib/helpers';
 import type { Product } from '@/types';
 
 export type ProductDetails = Product & {
@@ -226,7 +227,7 @@ export function getProductDetails(product: Product): ProductDetails {
     deliveryOptions: [
       {
         label: 'Standard delivery',
-        description: `${delivery.time} · ${delivery.charge === 0 ? 'Free' : `$${delivery.charge.toFixed(2)}`}`
+        description: `${delivery.time} · ${delivery.charge === 0 ? 'Free' : formatPrice(delivery.charge)}`
       },
       {
         label: 'Express delivery',
