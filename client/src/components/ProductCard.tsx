@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { Product } from '@/types';
@@ -14,6 +15,27 @@ type ProductCardProps = {
 export function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const { addItem } = useCart();
+  const [showAddedToast, setShowAddedToast] = useState(false);
+  const [toastTrigger, setToastTrigger] = useState(0);
+
+  useEffect(() => {
+    if (!showAddedToast) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setShowAddedToast(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [showAddedToast, toastTrigger]);
+
+  function triggerAddedToast() {
+    setShowAddedToast(true);
+    setToastTrigger((current) => current + 1);
+  }
 
   function handleAddToCart() {
     const auth = getStoredAuth();
@@ -25,7 +47,11 @@ export function ProductCard({ product }: ProductCardProps) {
       return;
     }
 
-    addItem(product);
+    const added = addItem(product);
+
+    if (added) {
+      triggerAddedToast();
+    }
   }
 
   return (
@@ -48,7 +74,12 @@ export function ProductCard({ product }: ProductCardProps) {
           <span className="text-base font-semibold text-zinc-950">
             {formatPrice(product.price)}
           </span>
-          <div className="flex items-center gap-3">
+          <div className="relative flex items-center gap-3">
+            {showAddedToast && (
+              <div className="absolute bottom-full right-0 z-40 mb-2 rounded-md bg-[#0E4A4E] px-2.5 py-1 text-xs font-semibold text-white shadow-lg">
+                Added to the cart
+              </div>
+            )}
             <button
               type="button"
               onClick={handleAddToCart}
