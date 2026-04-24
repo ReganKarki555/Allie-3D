@@ -38,7 +38,18 @@ function admin(req, res, next) {
   throw new Error('Not authorized as admin');
 }
 
+function vendor(req, res, next) {
+  if (req.user && req.user.role === 'vendor') {
+    next();
+    return;
+  }
+
+  res.status(403);
+  throw new Error('Not authorized as vendor');
+}
+
 module.exports = {
   protect,
-  admin
+  admin,
+  vendor
 };

@@ -1,11 +1,21 @@
-import { products } from '@/lib/products';
+import { getProducts } from '@/lib/api';
+import { mergeProducts } from '@/lib/products';
 import { ProductCard } from '@/components/ProductCard';
 
 const categoryFilters = [
   ,
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  let catalog = mergeProducts([]);
+
+  try {
+    const apiProducts = await getProducts();
+    catalog = mergeProducts(apiProducts);
+  } catch {
+    catalog = mergeProducts([]);
+  }
+
   return (
     <section className="pb-14">
       <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 sm:pt-6">
@@ -67,7 +77,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
+            {catalog.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>

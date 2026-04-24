@@ -1,16 +1,18 @@
 "use client";
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { clearAuth, getStoredAuth, type StoredAuth } from '@/lib/auth';
-import { products } from '@/lib/products';
+import { getProducts } from '@/lib/api';
+import { mergeProducts } from '@/lib/products';
+import type { Product } from '@/types';
 
 type SearchInputProps = {
   query: string;
   setQuery: (value: string) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  suggestions: typeof products;
+  suggestions: Product[];
   showSuggestions: boolean;
   onSuggestionSelect: () => void;
   wrapperClassName: string;
@@ -76,6 +78,20 @@ export function Navbar() {
   const router = useRouter();
   const [auth, setAuth] = useState<StoredAuth | null>(getStoredAuth());
   const [query, setQuery] = useState('');
+  const [catalog, setCatalog] = useState<Product[]>(mergeProducts([]));
+
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        const apiProducts = await getProducts();
+        setCatalog(mergeProducts(apiProducts));
+      } catch {
+        setCatalog(mergeProducts([]));
+      }
+    }
+
+    loadCatalog();
+  }, []);
 
   const suggestions = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -84,10 +100,10 @@ export function Navbar() {
       return [];
     }
 
-    return products
+    return catalog
       .filter((product) => product.name.toLowerCase().includes(normalizedQuery))
       .slice(0, 6);
-  }, [query]);
+  }, [catalog, query]);
 
   const showSuggestions = query.trim().length > 0 && suggestions.length > 0;
 

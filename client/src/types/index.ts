@@ -1,5 +1,6 @@
 export type Product = {
   _id: string;
+  seller?: string;
   name: string;
   description: string;
   price: number;
@@ -57,6 +58,15 @@ export type RegisterPayload = LoginPayload & {
 
 export type AuthResponse = User & {
   token: string;
+};
+
+export type CreateProductPayload = {
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  countInStock: number;
 };
 
 export type Order = {

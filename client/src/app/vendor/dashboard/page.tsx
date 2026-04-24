@@ -4,16 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStoredAuth } from '@/lib/auth';
 import { formatPrice } from '@/lib/helpers';
-
-type VendorProduct = {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  stock: number;
-  image: string;
-  description: string;
-};
+import { createProduct, getProducts } from '@/lib/api';
+import type { Product } from '@/types';
 
 export default function VendorDashboardPage() {
   const router = useRouter();
@@ -27,7 +19,7 @@ export default function VendorDashboardPage() {
   const [image, setImage] = useState('');
   const [description, setDescription] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [listedProducts, setListedProducts] = useState<VendorProduct[]>([]);
+  const [listedProducts, setListedProducts] = useState<Product[]>([]);
 
   const parsedPrice = Number(price);
   const parsedStock = Number(stock);
@@ -57,11 +49,28 @@ export default function VendorDashboardPage() {
     }
   }, [auth, router, userRole]);
 
+  useEffect(() => {
+    if (!auth || userRole !== 'vendor') {
+      return;
+    }
+
+    async function loadVendorProducts() {
+      try {
+        const allProducts = await getProducts();
+        setListedProducts(allProducts.filter((product) => product.seller === auth.user._id));
+      } catch {
+        setFeedback('Unable to load your products right now.');
+      }
+    }
+
+    loadVendorProducts();
+  }, [auth, userRole]);
+
   if (!auth || userRole !== 'vendor') {
     return null;
   }
 
-  function handleAddProduct(event: React.FormEvent<HTMLFormElement>) {
+  async function handleAddProduct(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFeedback('');
 
@@ -80,24 +89,27 @@ export default function VendorDashboardPage() {
       return;
     }
 
-    const newProduct: VendorProduct = {
-      id: `${Date.now()}`,
-      name: name.trim(),
-      category,
-      price: parsedPrice,
-      stock: parsedStock,
-      image: image.trim(),
-      description: description.trim()
-    };
+    try {
+      const createdProduct = await createProduct({
+        name: name.trim(),
+        description: description.trim(),
+        image: image.trim(),
+        category,
+        price: parsedPrice,
+        countInStock: parsedStock
+      }, auth.token);
 
-    setListedProducts((current) => [newProduct, ...current]);
-    setName('');
-    setCategory('General');
-    setPrice('');
-    setStock('');
-    setImage('');
-    setDescription('');
-    setFeedback('Product listed successfully.');
+      setListedProducts((current) => [createdProduct, ...current]);
+      setName('');
+      setCategory('General');
+      setPrice('');
+      setStock('');
+      setImage('');
+      setDescription('');
+      setFeedback('Product listed successfully.');
+    } catch (error) {
+      setFeedback(error instanceof Error ? error.message : 'Unable to list product right now.');
+    }
   }
 
   return (
@@ -239,7 +251,7 @@ export default function VendorDashboardPage() {
           ) : (
             <div className="mt-5 space-y-4">
               {listedProducts.map((product) => (
-                <article key={product.id} className="flex gap-3 rounded-xl border border-zinc-200 p-3">
+                <article key={product._id} className="flex gap-3 rounded-xl border border-zinc-200 p-3">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -251,7 +263,7 @@ export default function VendorDashboardPage() {
                     <p className="mt-2 line-clamp-2 text-sm text-zinc-600">{product.description}</p>
                     <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                       <span className="font-medium text-zinc-900">{formatPrice(product.price)}</span>
-                      <span className="text-zinc-600">Stock: {product.stock}</span>
+                      <span className="text-zinc-600">Stock: {product.countInStock}</span>
                     </div>
                   </div>
                 </article>

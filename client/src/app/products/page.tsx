@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProductCard } from '@/components/ProductCard';
-import { products } from '@/lib/products';
+import { getProducts } from '@/lib/api';
+import { mergeProducts } from '@/lib/products';
+import type { Product } from '@/types';
 
 const fallbackRatings: Record<string, number> = {
   '1': 5,
@@ -40,14 +42,28 @@ export default function ProductsPage() {
   const [ratingFilter, setRatingFilter] = useState<RatingFilter>('all');
   const [minPriceInput, setMinPriceInput] = useState('');
   const [maxPriceInput, setMaxPriceInput] = useState('');
+  const [catalog, setCatalog] = useState<Product[]>(() => mergeProducts([]));
+
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        const apiProducts = await getProducts();
+        setCatalog(mergeProducts(apiProducts));
+      } catch {
+        setCatalog(mergeProducts([]));
+      }
+    }
+
+    loadCatalog();
+  }, []);
 
   const minPrice = Number(minPriceInput);
   const maxPrice = Number(maxPriceInput);
 
   const filteredProducts = useMemo(() => {
     let result = normalizedQuery
-      ? products.filter((product) => product.name.toLowerCase().includes(normalizedQuery))
-      : products;
+      ? catalog.filter((product) => product.name.toLowerCase().includes(normalizedQuery))
+      : catalog;
 
     if (ratingFilter !== 'all') {
       const selectedRating = Number(ratingFilter);
@@ -71,7 +87,7 @@ export default function ProductsPage() {
     }
 
     return result;
-  }, [maxPrice, maxPriceInput, minPrice, minPriceInput, normalizedQuery, ratingFilter, sortOrder]);
+  }, [catalog, maxPrice, maxPriceInput, minPrice, minPriceInput, normalizedQuery, ratingFilter, sortOrder]);
 
   const showSearchFilters = query.length > 0;
 
